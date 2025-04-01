@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from cipher.vigenere import VigenereCipher
 from cipher.caesar import CaesarCipher
 from cipher.railfence import RailFenceCipher
-from cipher.playfair import PlayFairCiphergit 
+from cipher.playfair import PlayFairCipher
 from cipher.transposition import TranspositionCipher
 app = Flask(__name__)
 

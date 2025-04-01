@@ -1,28 +1,52 @@
-from flask import Flask, request, jsonify
-from cipher.transposition import TranspositionCipher  # Thêm vào đầu file
-
-app = Flask(__name__)
-
-# PlayFair Cipher
-transposition_cipher = TranspositionCipher()
-
-@app.route('/api/transposition/encrypt', methods=['POST'])
-def transposition_encrypt():
-    data = request.get_json()
-    plain_text = data.get('plain_text')
-    key = int(data.get('key'))
-
-    encrypted_text = transposition_cipher.encrypt(plain_text, key)
-    return jsonify({'encrypted_text': encrypted_text})
-
-@app.route('/api/transposition/decrypt', methods=['POST'])
-def transposition_decrypt():
-    data = request.get_json()
-    cipher_text = data.get('cipher_text')
-    key = int(data.get('key'))
-
-    decrypted_text = transposition_cipher.decrypt(cipher_text, key)
-    return jsonify({'decrypted_text': decrypted_text})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Caesar Cipher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container mt-5">
+        <table class="table table-bordered">
+            <tr>
+                <td style="text-align: center; font-weight: bold; font-size: 25px;">CAESAR CIPHER</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; color: blue">ENCRYPTION</td>
+            </tr>
+            <tr>
+                <td>
+                    <form method="POST" action="/encrypt">
+                        <div class="mb-3">
+                            <label class="form-label">Plaintext:</label>
+                            <input type="text" class="form-control" name="inputPlainText" placeholder="Input Plain Text" required autofocus/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Key:</label>
+                            <input type="number" class="form-control" name="inputKeyPlain" placeholder="Input Key" required/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Encrypt</button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; color: blue">DECRYPTION</td>
+            </tr>
+            <tr>
+                <td>
+                    <form method="POST" action="/decrypt">
+                        <div class="mb-3">
+                            <label class="form-label">Ciphertext:</label>
+                            <input type="text" class="form-control" name="inputCipherText" placeholder="Input Cipher Text" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Key:</label>
+                            <input type="number" class="form-control" name="inputKeyCipher" placeholder="Input Key" required/>
+                        </div>
+                        <button type="submit" class="btn btn-success">Decrypt</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
