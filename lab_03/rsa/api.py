@@ -1,28 +1,27 @@
 from flask import Flask, request, jsonify
-from cipher.rsa import RSACipher
+from rsa_cipher import RSAcipher
 
 app = Flask(__name__)
 
-# RSA CIPHER ALGORITHM
-rsa_cipher = RSACipher()
+# THUẬT TOÁN MÃ HÓA
+rsa_cipher = RSAcipher()
 
 @app.route('/api/rsa/generate_keys', methods=['GET'])
 def rsa_generate_keys():
-    rsa_cipher.generate_keys()
-    return jsonify({'message': 'Keys generated successfully'})
+    return jsonify({'message': 'Tạo khóa thành công'})
 
 @app.route('/api/rsa/encrypt', methods=['POST'])
 def rsa_encrypt():
-    data = request.json
+    data = request.get_json()
     message = data['message']
-    key_type = data['key_type']
-    private_key, public_key = rsa_cipher.load_keys()
-    if key_type == 'public':
+    key_type = data['key_type']  # public_key | private_key
+    public_key, private_key = rsa_cipher.load_keys()
+    if key_type == 'public_key':
         key = public_key
-    elif key_type == 'private':
+    elif key_type == 'private_key':
         key = private_key
     else:
-        return jsonify({'error': 'Invalid key type'})
+        return jsonify({'error': 'Loại khóa không hợp lệ'})
 
     encrypted_message = rsa_cipher.encrypt(message, key)
     encrypted_hex = encrypted_message.hex()
@@ -30,42 +29,39 @@ def rsa_encrypt():
 
 @app.route('/api/rsa/decrypt', methods=['POST'])
 def rsa_decrypt():
-    data = request.json
+    data = request.get_json()
     ciphertext_hex = data['ciphertext']
-    key_type = data['key_type']
-    private_key, public_key = rsa_cipher.load_keys()
-    if key_type == 'public':
-                key = public_key
-    elif key_type == 'private':
+    key_type = data['key_type']  # public_key | private_key
+    ciphertext = bytes.fromhex(ciphertext_hex)
+    public_key, private_key = rsa_cipher.load_keys()
+    if key_type == 'public_key':
+        key = public_key
+    elif key_type == 'private_key':
         key = private_key
     else:
-        return jsonify({'error': 'Invalid key type'})
+        return jsonify({'error': 'Loại khóa không hợp lệ'})
 
-    ciphertext = bytes.fromhex(ciphertext_hex)
     decrypted_message = rsa_cipher.decrypt(ciphertext, key)
     return jsonify({'decrypted_message': decrypted_message})
 
 @app.route('/api/rsa/sign', methods=['POST'])
-def rsa_sign_message():
-    data = request.json
+def rsa_sign():
+    data = request.get_json()
     message = data['message']
-    private_key, _ = rsa_cipher.load_keys()
+    private_key = rsa_cipher.load_keys()[1]  # private_key
     signature = rsa_cipher.sign(message, private_key)
     signature_hex = signature.hex()
     return jsonify({'signature': signature_hex})
 
 @app.route('/api/rsa/verify', methods=['POST'])
-def rsa_verify_signature():
-    data = request.json
+def rsa_verify():
+    data = request.get_json()
     message = data['message']
     signature_hex = data['signature']
-    public_key, _ = rsa_cipher.load_keys()
     signature = bytes.fromhex(signature_hex)
+    public_key = rsa_cipher.load_keys()[0]  # public_key
     is_verified = rsa_cipher.verify(message, signature, public_key)
     return jsonify({'is_verified': is_verified})
 
-# main function
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
-    
-
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=True)  # Thay 0.0.0.0 thành 127.0.0.1

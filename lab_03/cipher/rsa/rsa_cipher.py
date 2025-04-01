@@ -3,9 +3,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from ui.rsa import Ui_MainWindow
 import requests
 
-import os 
-os.environ['Qt_QPA_PLATFORM_PLUGIN_PATH']="../platforms"
-
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
