@@ -1,1 +1,2 @@
-from .ecc_cipher import ECCCipher
+from .ECCCipher import ECCCipher
+

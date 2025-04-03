@@ -2,7 +2,8 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from ui.caesar import Ui_MainWindow
 import requests
-
+import os 
+os.environ['Qt_QPA_PLATFORM_PLUGIN_PATH']="../platforms"
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -58,3 +59,4 @@ if __name__ == "__main__":
     window = MyApp()
     window.show()
     sys.exit(app.exec_())
+
